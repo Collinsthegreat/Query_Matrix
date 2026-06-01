@@ -1,7 +1,7 @@
 # QueryForge — Visual Query Engineering Platform
 
 ## Live Demo
-[View QueryForge Live](https://query-matrix.vercel.app/)
+[View QueryMatrix Live](https://query-matrix.vercel.app/)
 
 The included `vercel.json` configures `npm run build`, `.next`, Next.js framework detection, production on main, and preview deployments for pull requests.
 
