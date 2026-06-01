@@ -1,7 +1,9 @@
 # QueryForge — Visual Query Engineering Platform
 
 ## Live Demo
-Deploy with Vercel from this repository. The included `vercel.json` configures `npm run build`, `.next`, Next.js framework detection, production on main, and preview deployments for pull requests.
+[View QueryMatrix Live](https://query-matrix.vercel.app/)
+
+The included `vercel.json` configures `npm run build`, `.next`, Next.js framework detection, production on main, and preview deployments for pull requests.
 
 ## Architecture Explanation
 QueryForge uses one recursive `QueryNode` model as the source of truth. A `GroupNode` owns child `QueryNode[]`, so the same tree powers form rendering, graph rendering, generators, validation, simulator execution, history, presets, export, and import.
@@ -42,7 +44,7 @@ When `OPENAI_API_KEY` is configured, the route calls an OpenAI-compatible chat e
 Failures show a retryable toast. Successful generations import the returned `QueryTree` and show “Query generated! Review and run.”
 
 ## Trade-offs Made
-The project is fully buildable locally and prepared for the required seven-PR workflow, but actual PR creation and Vercel deployment need authenticated GitHub/Vercel access.
+The project is fully buildable locally, deployed to Vercel, and backed by the required seven-PR workflow. The AI integration remains optional: without `OPENAI_API_KEY`, the deterministic fallback parser keeps the submission reviewable.
 
 The local shadcn-compatible primitives use Radix directly rather than relying on generated shadcn files, keeping the codebase explicit while satisfying the specified component families.
 
@@ -69,19 +71,19 @@ npm test
 npm run build
 ```
 
-Current verification: TypeScript passes, ESLint has no warnings/errors, 53 Vitest tests pass, and production build succeeds.
+Current verification: TypeScript passes, ESLint has no warnings/errors, 76 Vitest tests pass, and production build succeeds.
 
 ## Git Workflow (PR history summary)
-PR 1: `feat/project-scaffold` — Next.js, TypeScript, Tailwind, shadcn-compatible primitives, Zustand, types, constants, treeUtils, unit tests.
+PR 1: [`feat/project-scaffold`](https://github.com/Collinsthegreat/Query_Matrix/pull/1) — Next.js, TypeScript, Tailwind, shadcn-compatible primitives, Zustand, types, constants, treeUtils, unit tests.
 
-PR 2: `feat/recursive-query-builder` — recursive `ConditionGroup`, `RuleRow`, selectors, dynamic inputs, logic toggle, DnD Kit.
+PR 2: [`feat/recursive-query-builder`](https://github.com/Collinsthegreat/Query_Matrix/pull/2) — recursive `ConditionGroup`, `RuleRow`, selectors, dynamic inputs, logic toggle, DnD Kit.
 
-PR 3: `feat/query-generators-and-preview` — SQL, MongoDB, Prisma, REST generators and Monaco preview tabs.
+PR 3: [`feat/query-generators-and-preview`](https://github.com/Collinsthegreat/Query_Matrix/pull/3) — SQL, MongoDB, Prisma, REST generators and Monaco preview tabs.
 
-PR 4: `feat/query-simulator` — deterministic datasets, executor, results table, sorting, pagination, CSV export.
+PR 4: [`feat/query-simulator`](https://github.com/Collinsthegreat/Query_Matrix/pull/4) — deterministic datasets, executor, results table, sorting, pagination, CSV export.
 
-PR 5: `feat/ai-natural-language-and-validation` — AI bar, API route, fallback parser, validators, conflict warnings, complexity badge.
+PR 5: [`feat/ai-natural-language-and-validation`](https://github.com/Collinsthegreat/Query_Matrix/pull/5) — AI bar, API route, fallback parser, validators, conflict warnings, complexity badge.
 
-PR 6: `feat/advanced-interactions` — command palette, keyboard shortcuts, timeline, schema switcher, ReactFlow graph, presets/history.
+PR 6: [`feat/advanced-interactions`](https://github.com/Collinsthegreat/Query_Matrix/pull/6) — command palette, keyboard shortcuts, timeline, schema switcher, ReactFlow graph, presets/history.
 
-PR 7: `feat/polish-and-accessibility` — theme persistence, responsive layout, mobile tabs, reduced motion, focus management, integration tests, README, Vercel config.
+PR 7: [`feat/polish-and-accessibility`](https://github.com/Collinsthegreat/Query_Matrix/pull/7) — theme persistence, responsive layout, mobile tabs, reduced motion, focus management, integration tests, README, Vercel config.
