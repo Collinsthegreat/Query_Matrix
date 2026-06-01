@@ -5,3 +5,6 @@ coverage/
 .env
 .env.local
 npm-debug.log*
+
+.tmp/
+tsconfig.tsbuildinfo
