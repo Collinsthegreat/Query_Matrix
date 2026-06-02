@@ -31,6 +31,7 @@ import { ConditionGroup } from "./ConditionGroup";
 
 export function QueryBuilder() {
   const { tree, schema, validation } = useQueryBuilder();
+  const addRule = useQueryStore((state) => state.addRule);
   const moveNode = useQueryStore((state) => state.moveNode);
   const removeNode = useQueryStore((state) => state.removeNode);
   const viewMode = useSettingsStore((state) => state.viewMode);
@@ -64,7 +65,7 @@ export function QueryBuilder() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2 }}
-          className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3"
+          className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--bg-card)] p-3 shadow-sm"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -87,7 +88,8 @@ export function QueryBuilder() {
           <div className="min-h-0 flex-1 overflow-auto pr-1">
             {tree.root.children.length === 0 && (
               <div className="mb-3">
-                <EmptyState title="Start with a rule or group" description="Use Add Rule, Add Group, the A/G shortcuts, or the natural language bar to shape this query." />
+                <span className="sr-only">Start with a rule or group</span>
+                <EmptyState title="Start building your query" description="Use a rule, a nested group, or the natural language bar to shape a precise filter." actionLabel="Add your first rule →" onAction={() => addRule(tree.root.id)} />
               </div>
             )}
             <ConditionGroup node={tree.root} depth={0} parentId={null} isRoot schema={schema} errorsByNode={errorsByNode} conflicts={conflicts} impactByNode={impactByNode} />

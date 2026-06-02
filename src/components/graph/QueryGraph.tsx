@@ -50,7 +50,7 @@ export function QueryGraph({ tree, schema }: { tree: QueryTree; schema: Schema }
   }
 
   return (
-    <div className="min-h-[520px] flex-1 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-card)]">
+    <div className="min-h-[520px] flex-1 overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--bg-input)]">
       <ReactFlow
         nodes={nodes}
         edges={graph.edges}
@@ -60,9 +60,9 @@ export function QueryGraph({ tree, schema }: { tree: QueryTree; schema: Schema }
         onNodeDragStop={onNodeDragStop}
         proOptions={{ hideAttribution: true }}
       >
-        <Background color="var(--border-hover)" gap={20} size={1} />
+        <Background color="var(--border-default)" gap={20} size={1} />
         <Controls position="top-left" showInteractive={false} />
-        <MiniMap position="bottom-right" pannable zoomable nodeColor={(node) => node.type === "groupNode" ? "var(--accent)" : "var(--type-string)"} />
+        <MiniMap position="bottom-right" pannable zoomable nodeColor={(node) => node.type === "groupNode" ? "var(--primary)" : "var(--type-string)"} />
       </ReactFlow>
     </div>
   );

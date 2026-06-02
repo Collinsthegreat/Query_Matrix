@@ -96,7 +96,7 @@ export function decodeShareUrl(urlValue: string): ShareDecodeResult {
   try {
     const url = new URL(urlValue);
     const encoded = url.searchParams.get("qf");
-    if (!encoded) return { valid: false, error: "No QueryForge share payload found." };
+    if (!encoded) return { valid: false, error: "No QueryMatrix share payload found." };
     const payload = JSON.parse(decodeURIComponent(decompress(encoded))) as unknown;
     if (typeof payload !== "object" || payload === null || !("tree" in payload)) {
       throw new Error("Share payload is malformed.");

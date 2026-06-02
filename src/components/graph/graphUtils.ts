@@ -55,11 +55,11 @@ function walk(node: QueryNode, parentId: string | null, nodes: GraphNode[], edge
       type: "smoothstep",
       animated: false,
       style: {
-        stroke: logic === "AND" ? "var(--and-color)" : "var(--or-color)",
+        stroke: logic === "AND" ? "var(--logic-and)" : "var(--logic-or)",
         strokeWidth: 2,
         strokeDasharray: logic === "OR" ? "6 5" : undefined
       },
-      labelStyle: { fill: logic === "AND" ? "var(--and-color)" : "var(--or-color)", fontWeight: 700 }
+      labelStyle: { fill: logic === "AND" ? "var(--logic-and)" : "var(--logic-or)", fontWeight: 700 }
     });
   }
   if (node.type === "group") {

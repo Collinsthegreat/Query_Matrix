@@ -7,7 +7,7 @@ export const SCHEMAS: Schema[] = [
     name: "Users",
     icon: "👤",
     description: "User accounts and profiles",
-    color: "#6366f1",
+    color: "#00c9b1",
     fields: [
       { key: "name", label: "Full Name", type: "string", placeholder: "John Doe" },
       { key: "email", label: "Email", type: "string", placeholder: "john@example.com" },

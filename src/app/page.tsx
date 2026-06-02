@@ -33,6 +33,12 @@ import { RunPulseFrame } from "@/components/shared/RunPulseFrame";
 import { cn } from "@/lib/utils";
 
 const MOBILE_TABS: MobileTab[] = ["Build", "Preview", "Results", "History"];
+const MOBILE_TAB_ICONS: Record<MobileTab, string> = {
+  Build: "ti-layout-list",
+  Preview: "ti-code",
+  Results: "ti-table",
+  History: "ti-history"
+};
 
 export default function HomePage() {
   const { tree, schema, complexity, counts, depth } = useQueryBuilder();
@@ -47,6 +53,7 @@ export default function HomePage() {
   const setMobileTab = useSettingsStore((state) => state.setMobileTab);
   const savePreset = usePresetsStore((state) => state.savePreset);
   const lastRunAt = useHistoryStore((state) => state.lastRunAt);
+  const lastResult = useHistoryStore((state) => state.lastResult);
   const pushToast = useToastStore((state) => state.pushToast);
   const runQuery = useRunQuery();
   const [paletteOpen, setPaletteOpen] = React.useState(false);
@@ -73,7 +80,7 @@ export default function HomePage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `queryforge-${schema.id}.json`;
+    link.download = `querymatrix-${schema.id}.json`;
     link.click();
     URL.revokeObjectURL(url);
     pushToast({ title: "Query JSON exported", tone: "success" });
@@ -138,14 +145,14 @@ export default function HomePage() {
       importTree(result.tree);
       pushToast({ title: "Query imported", tone: "success" });
     } catch (error) {
-      const description = error instanceof Error ? error.message : "The selected file is not a valid QueryForge JSON export.";
+      const description = error instanceof Error ? error.message : "The selected file is not a valid QueryMatrix JSON export.";
       pushToast({ title: "Import failed", description, tone: "error" });
     } finally {
       event.target.value = "";
     }
   }
 
-  const statusText = `${counts.rules} rules · ${counts.groups} groups · Depth ${depth} · Last run: ${formatRelativeRun(lastRunAt)}`;
+  const resultImpact = lastResult ? `${lastResult.results.length} / ${lastResult.scannedRows} rows match` : null;
   const rightPanel = (
     <div className="grid min-h-0 gap-3">
       <RunPulseFrame pulseKey={lastRunAt} order={1}><QueryPreview /></RunPulseFrame>
@@ -157,7 +164,7 @@ export default function HomePage() {
   return (
     <TooltipProvider>
       <MotionConfig reducedMotion="user">
-        <main className="flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+        <main className="flex min-h-screen flex-col bg-[var(--bg-app)] text-[var(--text-primary)]">
           <Header
             complexity={complexity}
             onOpenPalette={() => setPaletteOpen(true)}
@@ -179,16 +186,17 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-1 flex-col md:hidden">
-            <nav className="grid grid-cols-4 border-b border-[var(--border)] bg-[var(--bg-secondary)]" aria-label="Mobile workspace tabs">
+            <nav className="mobile-tab-bar" aria-label="Mobile workspace tabs">
               {MOBILE_TABS.map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   role="tab"
                   aria-selected={mobileTab === tab}
-                  className={cn("min-h-12 text-sm font-semibold text-[var(--text-secondary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]", mobileTab === tab && "bg-[var(--accent-muted)] text-[var(--text-primary)]")}
+                  className={cn("mobile-tab focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]", mobileTab === tab && "active")}
                   onClick={() => setMobileTab(tab)}
                 >
+                  <i className={`ti ${MOBILE_TAB_ICONS[tab]}`} aria-hidden="true" />
                   {tab}
                 </button>
               ))}
@@ -199,15 +207,40 @@ export default function HomePage() {
               {mobileTab === "Results" && <RunPulseFrame pulseKey={lastRunAt} order={2}><QuerySimulator /></RunPulseFrame>}
               {mobileTab === "History" && <div className="grid gap-3"><HistoryTimeline /><Sidebar /></div>}
             </div>
-            <div className="fixed bottom-0 left-0 right-0 z-[var(--z-sticky)] border-t border-[var(--border)] bg-[var(--bg-glass)] p-2 backdrop-blur">
-              <Button type="button" variant="primary" className="h-14 w-full text-base" onClick={() => void run()}>
-                ▶ Run Query
-              </Button>
-            </div>
+            <Button type="button" variant="primary" className="mobile-run-btn" onClick={() => void run()}>
+              <i className="ti ti-player-play" aria-hidden="true" />
+              Run Query
+            </Button>
           </div>
 
-          <footer className="border-t border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-2 text-xs text-[var(--text-secondary)]">
-            {statusText}
+          <footer className="flex h-[30px] shrink-0 items-center border-t border-[var(--border-default)] bg-[var(--bg-panel)] px-4 font-mono text-[var(--text-xs)] text-[var(--text-muted)]">
+            <div className="flex h-full items-center gap-1 border-r border-[var(--border-subtle)] px-3">
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--success)]" aria-hidden="true" />
+              Live
+            </div>
+            <div className="flex h-full items-center gap-1 border-r border-[var(--border-subtle)] px-3">
+              <i className="ti ti-list" aria-hidden="true" />
+              <span className="status-bar-value text-[var(--text-secondary)]">{counts.rules}</span> rules
+            </div>
+            <div className="flex h-full items-center gap-1 border-r border-[var(--border-subtle)] px-3">
+              <i className="ti ti-layout-rows" aria-hidden="true" />
+              <span className="status-bar-value text-[var(--text-secondary)]">{counts.groups}</span> groups
+            </div>
+            <div className="flex h-full items-center gap-1 border-r border-[var(--border-subtle)] px-3">
+              <i className="ti ti-git-branch" aria-hidden="true" />
+              Depth <span className="status-bar-value text-[var(--text-secondary)]">{depth}</span>
+            </div>
+            <div className="flex-1" />
+            {resultImpact && (
+              <div className="hidden h-full items-center gap-1 border-l border-[var(--border-subtle)] px-3 text-[var(--primary)] sm:flex">
+                <i className="ti ti-target" aria-hidden="true" />
+                <span className="status-bar-value">{resultImpact}</span>
+              </div>
+            )}
+            <div className="flex h-full items-center gap-1 border-l border-[var(--border-subtle)] px-3">
+              <i className="ti ti-clock" aria-hidden="true" />
+              Last run: <span className={cn("status-bar-value", lastRunAt ? "text-[var(--text-secondary)]" : "text-[var(--text-disabled)]")}>{formatRelativeRun(lastRunAt)}</span>
+            </div>
           </footer>
           <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onRun={() => void run()} onExportJson={exportJson} onImportJson={importJson} onCopySql={() => void copySql()} onLoadDemo={() => void loadBenchmarkDemo()} onCopyShareUrl={() => void copyShareUrl()} />
           <ToastViewport />

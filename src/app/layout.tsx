@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "QueryForge — Visual Query Engineering Platform",
+  title: "QueryMatrix — Visual Query Engineering Platform",
   description: "A recursive visual query builder with generators, simulation, graph mode, and time travel."
 };
 

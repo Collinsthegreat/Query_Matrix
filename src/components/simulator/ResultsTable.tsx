@@ -10,7 +10,6 @@ import { matchingFieldKeys } from "@/lib/executor";
 import type { ReplayFrame } from "@/lib/queryReplay";
 import { replayRowKey } from "@/lib/queryReplay";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +23,15 @@ function compareValues(a: unknown, b: unknown): number {
 function csvValue(value: unknown): string {
   const text = String(value ?? "");
   return `"${text.replaceAll("\"", "\"\"")}"`;
+}
+
+function statusClasses(value: unknown): string | null {
+  const normalized = String(value ?? "").toLowerCase();
+  if (["active", "paid"].includes(normalized)) return "border-[var(--success-border)] bg-[var(--success-muted)] text-[var(--success)]";
+  if (["inactive", "banned", "cancelled", "failed"].includes(normalized)) return "border-[var(--danger-border)] bg-[var(--danger-muted)] text-[var(--danger)]";
+  if (["pending", "draft"].includes(normalized)) return "border-[var(--warning-border)] bg-[var(--warning-muted)] text-[var(--warning)]";
+  if (["shipped", "processing"].includes(normalized)) return "border-[var(--info-border)] bg-[var(--info-muted)] text-[var(--info)]";
+  return null;
 }
 
 export function ResultsTable({ rows, schema, tree, loading, scannedRows, replayFrame }: { rows: ResultRecord[]; schema: Schema; tree: QueryTree; loading: boolean; scannedRows: number; replayFrame?: ReplayFrame | null }) {
@@ -64,32 +72,36 @@ export function ResultsTable({ rows, schema, tree, loading, scannedRows, replayF
 
   if (loading) {
     return (
-      <div className="space-y-2" aria-label="Loading results">
-        {Array.from({ length: 10 }, (_, index) => <div key={index} className="h-10 animate-pulse rounded bg-[linear-gradient(90deg,var(--bg-input),var(--bg-card-hover),var(--bg-input))] bg-[length:200%_100%]" />)}
+      <div className="rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--bg-panel)] p-3" aria-label="Loading results">
+        <div className="grid gap-2">
+          {Array.from({ length: 8 }, (_, index) => (
+            <div key={index} className="h-10 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)]" style={{ animation: `shimmer 1.4s ease-in-out ${index * 80}ms infinite` }} />
+          ))}
+        </div>
       </div>
     );
   }
 
   if (rows.length === 0) {
-    return <EmptyState title="No records match your query" description="Try widening the filters or switching logic from AND to OR." />;
+    return <EmptyState title="No rows match" description="Adjust your query conditions or switch logic from AND to OR." />;
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Badge tone="accent">Showing {rows.length} of {scannedRows} records</Badge>
+    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--bg-panel)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-card)] px-3.5 py-2.5">
+        <span className="rounded-[var(--radius-sm)] border border-[var(--primary-border)] bg-[var(--primary-muted)] px-2.5 py-1 font-mono text-[var(--text-xs)] font-semibold text-[var(--primary)]">{rows.length} / {scannedRows} rows matched</span>
         <Button type="button" variant="secondary" size="sm" onClick={exportCsv}>
           <Download aria-hidden="true" size={15} />
           Export CSV
         </Button>
       </div>
-      <div className="overflow-auto rounded border border-[var(--border)]">
-        <table className="min-w-full border-collapse text-sm" role="grid">
-          <thead className="bg-[var(--bg-input)]">
+      <div className="overflow-auto">
+        <table className="min-w-full table-fixed border-collapse text-[var(--text-sm)]" role="grid">
+          <thead className="bg-[var(--bg-elevated)]">
             <tr>
               {schema.fields.map((field) => (
-                <th key={field.key} scope="col" aria-sort={sort?.key === field.key ? (sort.direction === "asc" ? "ascending" : "descending") : "none"} className="whitespace-nowrap border-b border-[var(--border)] px-3 py-2 text-left font-semibold text-[var(--text-secondary)]">
-                  <button type="button" className="inline-flex min-h-8 items-center gap-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]" onClick={() => toggleSort(field.key)}>
+                <th key={field.key} scope="col" aria-sort={sort?.key === field.key ? (sort.direction === "asc" ? "ascending" : "descending") : "none"} className={cn("whitespace-nowrap border-b border-[var(--border-default)] px-3.5 py-2 text-left text-[var(--text-xs)] font-medium uppercase tracking-[0.07em] text-[var(--text-muted)]", sort?.key === field.key && "text-[var(--primary)]")}>
+                  <button type="button" className="inline-flex min-h-7 items-center gap-1 rounded hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]" onClick={() => toggleSort(field.key)}>
                     {field.label}
                     {sort?.key === field.key && (sort.direction === "asc" ? <ArrowUp aria-hidden="true" size={13} /> : <ArrowDown aria-hidden="true" size={13} />)}
                   </button>
@@ -112,19 +124,35 @@ export function ResultsTable({ rows, schema, tree, loading, scannedRows, replayF
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: 18 }}
                   transition={{ duration: 0.24, ease: "easeOut" }}
-                  className={cn("hover:bg-[var(--bg-card-hover)]", isAdded && "bg-[rgba(59,130,246,0.12)]")}
+                  className={cn(
+                    "border-b border-[var(--border-subtle)] transition-colors hover:bg-[var(--bg-elevated)]",
+                    rowIndex % 2 === 1 && "bg-[rgba(255,255,255,0.01)]",
+                    !replayFrame && "bg-[rgba(34,197,94,0.035)]",
+                    isAdded && "bg-[var(--info-muted)]"
+                  )}
                 >
-                  {schema.fields.map((field) => (
-                    <td
-                      key={field.key}
-                      className={cn(
-                        "whitespace-nowrap border-b border-[var(--border)] px-3 py-2 text-[var(--text-primary)]",
-                        matched.has(field.key) && "bg-[rgba(34,197,94,0.14)]"
-                      )}
-                    >
-                      {String(row[field.key] ?? "")}
-                    </td>
-                  ))}
+                  {schema.fields.map((field) => {
+                    const value = row[field.key];
+                    const chipClass = statusClasses(value);
+                    return (
+                      <td
+                        key={field.key}
+                        className={cn(
+                          "whitespace-nowrap px-3.5 py-2 text-[var(--text-primary)]",
+                          field.type === "number" && "font-mono text-[var(--type-number)]",
+                          field.type === "date" && "font-mono text-[var(--type-date)]",
+                          field.type === "boolean" && "font-mono",
+                          matched.has(field.key) && "bg-[rgba(34,197,94,0.13)]"
+                        )}
+                      >
+                        {chipClass ? (
+                          <span className={cn("inline-flex items-center rounded-[var(--radius-xs)] border px-2 py-0.5 font-mono text-[var(--text-xs)] font-medium", chipClass)}>{String(value ?? "")}</span>
+                        ) : (
+                          <span className={cn(field.type === "boolean" && (value ? "text-[var(--success)]" : "text-[var(--danger)]"))}>{String(value ?? "")}</span>
+                        )}
+                      </td>
+                    );
+                  })}
                 </motion.tr>
               );
             })}
@@ -132,9 +160,9 @@ export function ResultsTable({ rows, schema, tree, loading, scannedRows, replayF
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 border-t border-[var(--border-subtle)] bg-[var(--bg-card)] px-3.5 py-2 font-mono text-[var(--text-xs)] text-[var(--text-muted)]">
         <Button type="button" variant="secondary" size="sm" disabled={page === 0} onClick={() => setPage((current) => Math.max(0, current - 1))}>Previous</Button>
-        <span className="text-xs text-[var(--text-secondary)]">Page {page + 1} of {pageCount}</span>
+        <span>Page <span className="text-[var(--text-secondary)]">{page + 1}</span> of <span className="text-[var(--text-secondary)]">{pageCount}</span></span>
         <Button type="button" variant="secondary" size="sm" disabled={page + 1 >= pageCount} onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}>Next</Button>
       </div>
     </div>

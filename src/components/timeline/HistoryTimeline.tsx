@@ -32,25 +32,25 @@ export function HistoryTimeline() {
   }
 
   return (
-    <section className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3" aria-label="History timeline">
-      <div className="mb-3 flex items-center justify-between gap-2">
+    <section className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--bg-panel)] p-3.5 shadow-sm" aria-label="History timeline">
+      <div className="mb-3.5 flex items-center justify-between gap-2">
         <div>
-          <h2 className="text-sm font-semibold text-[var(--text-primary)]">History Timeline</h2>
-          <p className="text-xs text-[var(--text-secondary)]">Maximum 50 snapshots stored</p>
+          <h2 className="text-[var(--text-sm)] font-medium text-[var(--text-primary)]">History</h2>
+          <p className="font-mono text-[var(--text-xs)] text-[var(--text-muted)]">50 snapshots max</p>
         </div>
         <div className="flex gap-2">
           <Tooltip content="Undo (⌘Z)">
-            <Button type="button" variant="secondary" size="icon" aria-label="Undo" onClick={() => queryTemporalStore.getState().undo()}>
+            <Button type="button" variant="secondary" size="icon" className="h-7 w-7" aria-label="Undo" onClick={() => queryTemporalStore.getState().undo()}>
               <RotateCcw aria-hidden="true" size={15} />
             </Button>
           </Tooltip>
           <Tooltip content="Redo (⌘⇧Z)">
-            <Button type="button" variant="secondary" size="icon" aria-label="Redo" onClick={() => queryTemporalStore.getState().redo()}>
+            <Button type="button" variant="secondary" size="icon" className="h-7 w-7" aria-label="Redo" onClick={() => queryTemporalStore.getState().redo()}>
               <RotateCw aria-hidden="true" size={15} />
             </Button>
           </Tooltip>
           <Tooltip content="Clear history">
-            <Button type="button" variant="secondary" size="icon" aria-label="Clear history" onClick={() => queryTemporalStore.getState().clear()}>
+            <Button type="button" variant="danger" size="icon" className="h-7 w-7" aria-label="Clear history" onClick={() => queryTemporalStore.getState().clear()}>
               <X aria-hidden="true" size={15} />
             </Button>
           </Tooltip>
@@ -59,21 +59,21 @@ export function HistoryTimeline() {
       <div className="flex min-h-12 items-center overflow-x-auto px-1">
         {snapshots.map((snapshot, index) => (
           <React.Fragment key={`${snapshot.tree.version}-${index}`}>
-            {index > 0 && <div className="h-px min-w-8 flex-1 bg-[var(--border-hover)]" aria-hidden="true" />}
+            {index > 0 && <div className="h-px min-w-8 flex-1 bg-[var(--border-subtle)]" aria-hidden="true" />}
             <Popover>
               <PopoverTrigger asChild>
                 <button
                   type="button"
                   aria-label={`Jump to snapshot ${index + 1}`}
-                  className="grid h-8 min-w-8 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                  className="grid h-8 min-w-8 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
                   onClick={() => jump(snapshot)}
                 >
-                  <span className={index === currentIndex ? "h-4 w-4 rounded-full border-2 border-[var(--accent)] bg-[var(--bg-card)] ring-4 ring-[var(--accent-muted)]" : "h-3 w-3 rounded-full bg-[var(--text-muted)]"} />
+                  <span className={index === currentIndex ? "h-3.5 w-3.5 rounded-full border-2 border-[var(--primary)] bg-[var(--primary)] ring-4 ring-[var(--primary-muted)]" : index < currentIndex ? "h-2.5 w-2.5 rounded-full border border-[var(--primary)] bg-[var(--primary-muted)] opacity-60 transition hover:scale-110 hover:opacity-90" : "h-2.5 w-2.5 rounded-full border border-[var(--border-strong)] bg-[var(--border-default)] opacity-30"} />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-64">
-                <div className="text-sm font-semibold">{summary(snapshot)} — 2 minutes ago</div>
-                <pre className="mt-2 max-h-32 overflow-auto rounded bg-[var(--bg-input)] p-2 text-xs text-[var(--text-secondary)]">{JSON.stringify(snapshot.tree.root.children.slice(0, 2), null, 2)}</pre>
+                <div className="font-mono text-sm font-semibold">{summary(snapshot)} — 2 minutes ago</div>
+                <pre className="mt-2 max-h-32 overflow-auto rounded-[var(--radius-sm)] bg-[var(--bg-input)] p-2 text-xs text-[var(--text-secondary)]">{JSON.stringify(snapshot.tree.root.children.slice(0, 2), null, 2)}</pre>
               </PopoverContent>
             </Popover>
           </React.Fragment>

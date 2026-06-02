@@ -13,10 +13,10 @@ export function Tooltip({ children, content }: { children: React.ReactNode; cont
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content
           sideOffset={8}
-          className={cn("z-[var(--z-dropdown)] max-w-72 rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-xs text-[var(--text-primary)] shadow-md")}
+          className={cn("z-[var(--z-dropdown)] max-w-72 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-tooltip)] px-3 py-2 text-[var(--text-xs)] text-[var(--text-primary)] shadow-md")}
         >
           {content}
-          <TooltipPrimitive.Arrow className="fill-[var(--bg-card)]" />
+          <TooltipPrimitive.Arrow className="fill-[var(--bg-tooltip)]" />
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Portal>
     </TooltipPrimitive.Root>

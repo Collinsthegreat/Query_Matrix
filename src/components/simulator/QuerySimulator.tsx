@@ -56,11 +56,11 @@ export function QuerySimulator() {
   }
 
   return (
-    <section className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3" aria-label="Query simulator">
+    <section className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--bg-panel)] p-3 shadow-sm" aria-label="Query simulator">
       <div className="mb-3 flex items-center justify-between gap-2">
         <div>
-          <h2 className="text-base font-semibold text-[var(--text-primary)]">Results</h2>
-          <p className="text-xs text-[var(--text-secondary)]">Mock {schema.name.toLowerCase()} dataset · 100 rows</p>
+          <h2 className="text-[var(--text-lg)] font-semibold text-[var(--text-primary)]">Results</h2>
+          <p className="font-mono text-[var(--text-xs)] text-[var(--text-muted)]">Mock {schema.name.toLowerCase()} dataset · 100 rows</p>
         </div>
         <Tooltip content="Run query (⌘Enter)">
           <Button type="button" variant="primary" size="sm" onClick={() => void onRun()} disabled={loading}>
@@ -76,14 +76,14 @@ export function QuerySimulator() {
         </Tooltip>
       </div>
       {currentFrame && (
-        <div className="mb-3 rounded-lg border border-[var(--border-accent)] bg-[var(--accent-muted)] p-3" aria-live="polite">
+        <div className="mb-3 rounded-[var(--radius-lg)] border border-[var(--primary-border)] bg-[var(--primary-muted)] p-3" aria-live="polite">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <div className="text-xs font-semibold uppercase text-[var(--text-accent)]">Replay step {currentFrame.step} of {currentFrame.totalSteps}</div>
+              <div className="font-mono text-[var(--text-xs)] font-semibold uppercase text-[var(--primary)]">Replay step {currentFrame.step} of {currentFrame.totalSteps}</div>
               <div className="mt-1 text-sm font-semibold text-[var(--text-primary)]">{currentFrame.label}</div>
-              <div className="text-xs text-[var(--text-secondary)]">{currentFrame.detail}</div>
+              <div className="text-[var(--text-xs)] text-[var(--text-secondary)]">{currentFrame.detail}</div>
             </div>
-            <div className="text-right text-xs text-[var(--text-secondary)]">
+            <div className="text-right font-mono text-[var(--text-xs)] text-[var(--text-secondary)]">
               <div>{currentFrame.removedKeys.size} rows faded out</div>
               {currentFrame.addedKeys.size > 0 && <div>{currentFrame.addedKeys.size} rows restored by OR logic</div>}
             </div>

@@ -45,13 +45,13 @@ export function NaturalLanguageBar() {
 
   return (
     <form
-      className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-2 shadow-sm"
+      className="flex items-center gap-2 rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--bg-card)] p-2 shadow-sm"
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
       }}
     >
-      <span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded border border-[var(--border)] bg-[var(--accent-muted)] text-lg">✨</span>
+      <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-[var(--primary-border)] bg-[var(--primary-muted)] text-lg text-[var(--primary)]">✨</span>
       <label className="sr-only" htmlFor="natural-language-query">Describe your query</label>
       <Input
         id="natural-language-query"

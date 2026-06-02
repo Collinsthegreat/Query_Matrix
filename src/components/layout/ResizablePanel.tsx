@@ -35,7 +35,7 @@ export function ResizablePanel({ left, right, className }: { left: React.ReactNo
       <div className="min-h-0 overflow-hidden">{left}</div>
       <button
         type="button"
-        className="hidden cursor-col-resize rounded-full bg-[var(--border)] hover:bg-[var(--border-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] lg:block"
+        className="hidden cursor-col-resize rounded-full bg-[var(--border-default)] hover:bg-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] lg:block"
         aria-label="Resize panels"
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);

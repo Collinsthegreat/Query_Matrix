@@ -16,14 +16,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded border font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:pointer-events-none disabled:opacity-50",
-          variant === "primary" && "border-[var(--accent)] bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]",
-          variant === "secondary" && "border-[var(--border)] bg-[var(--bg-input)] text-[var(--text-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)]",
-          variant === "ghost" && "border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)]",
-          variant === "danger" && "border-[rgba(239,68,68,0.35)] bg-[rgba(239,68,68,0.12)] text-[var(--danger)] hover:bg-[rgba(239,68,68,0.2)]",
-          size === "sm" && "h-9 px-3 text-xs",
-          size === "md" && "h-11 px-4 text-sm",
-          size === "icon" && "h-11 w-11 p-0",
+          "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] border font-[var(--weight-medium)] transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-app)] disabled:pointer-events-none disabled:opacity-35",
+          variant === "primary" && "border-transparent bg-[var(--primary)] text-[var(--text-on-primary)] shadow-[var(--shadow-glow)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] active:scale-[0.98]",
+          variant === "secondary" && "border-[var(--border-default)] bg-[var(--bg-elevated)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] active:scale-[0.98]",
+          variant === "ghost" && "border-transparent bg-transparent text-[var(--text-muted)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]",
+          variant === "danger" && "border-[var(--danger-border)] bg-[var(--danger-muted)] text-[var(--danger)] hover:bg-[var(--danger)] hover:text-white active:scale-[0.98]",
+          size === "sm" && "h-8 px-3 text-[var(--text-xs)]",
+          size === "md" && "h-10 px-4 text-[var(--text-sm)]",
+          size === "icon" && "h-8 w-8 p-0",
           className
         )}
         {...props}

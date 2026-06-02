@@ -9,8 +9,8 @@ export function RuleGraphNode({ data, selected }: NodeProps<GraphNodeData>) {
   return (
     <div
       className={cn(
-        "min-w-56 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 text-left shadow-sm transition",
-        selected && "ring-2 ring-[var(--accent)]",
+        "min-w-56 rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--bg-card)] p-3 text-left shadow-sm transition",
+        selected && "ring-2 ring-[var(--primary)]",
         data.matched === true && "border-[var(--success)] shadow-success",
         data.matched === false && "border-[var(--danger)] shadow-danger"
       )}
@@ -22,10 +22,10 @@ export function RuleGraphNode({ data, selected }: NodeProps<GraphNodeData>) {
       <div className="mt-2 truncate text-xs text-[var(--text-secondary)]">{data.detail}</div>
       {data.impactLabel && (
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--bg-input)]" aria-label={`${data.impactLabel}, ${data.impactPercentage ?? 0}%`}>
-          <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: `${data.impactPercentage ?? 0}%` }} />
+          <div className="h-full rounded-full bg-[var(--primary)]" style={{ width: `${data.impactPercentage ?? 0}%` }} />
         </div>
       )}
-      {data.impactLabel && <div className="mt-1 text-xs font-medium text-[var(--text-accent)]">{data.impactLabel}</div>}
+      {data.impactLabel && <div className="mt-1 font-mono text-xs font-medium text-[var(--primary)]">{data.impactLabel}</div>}
       {data.matched !== undefined && (
         <div className={cn("mt-2 text-xs font-semibold", data.matched ? "text-[var(--success)]" : "text-[var(--danger)]")}>
           {data.matched ? "Matched result" : "No match"}

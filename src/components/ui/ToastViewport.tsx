@@ -20,10 +20,10 @@ export function ToastViewport() {
         <div
           key={message.id}
           className={cn(
-            "rounded-lg border bg-[var(--bg-card)] p-3 text-sm shadow-md",
-            message.tone === "success" && "border-[rgba(34,197,94,0.35)]",
-            message.tone === "error" && "border-[rgba(239,68,68,0.35)]",
-            message.tone === "info" && "border-[var(--border-accent)]"
+            "rounded-[var(--radius-lg)] border bg-[var(--bg-card)] p-3 text-sm shadow-md",
+            message.tone === "success" && "border-[var(--success-border)]",
+            message.tone === "error" && "border-[var(--danger-border)]",
+            message.tone === "info" && "border-[var(--primary-border)]"
           )}
         >
           <div className="font-semibold text-[var(--text-primary)]">{message.title}</div>
@@ -31,7 +31,7 @@ export function ToastViewport() {
           {message.action && message.actionLabel && (
             <button
               type="button"
-              className="mt-2 rounded border border-[var(--border)] px-2 py-1 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+              className="mt-2 rounded-[var(--radius-sm)] border border-[var(--border-default)] px-2 py-1 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
               onClick={message.action}
             >
               {message.actionLabel}

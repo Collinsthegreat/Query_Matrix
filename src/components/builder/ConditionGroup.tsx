@@ -46,9 +46,10 @@ export const ConditionGroup = React.memo(({ node, depth, parentId, isRoot = fals
   const sortableAttributes = { ...attributes, "aria-roledescription": "sortable group" };
   const groupStyle = {
     "--group-depth-color": depth > 0 ? depthVar(depth) : "transparent",
+    "--group-depth-bg": depth > 0 ? `var(--depth-${Math.min(depth, 5)}-bg)` : "var(--bg-panel)",
     "--dnd-transform": CSS.Transform.toString(transform) ?? "none",
     "--dnd-transition": transition ?? "var(--transition-base)"
-  } as React.CSSProperties & Record<"--group-depth-color", string> & Record<"--dnd-transform", string> & Record<"--dnd-transition", string>;
+  } as React.CSSProperties & Record<"--group-depth-color", string> & Record<"--group-depth-bg", string> & Record<"--dnd-transform", string> & Record<"--dnd-transition", string>;
 
   return (
     <motion.div
@@ -62,17 +63,19 @@ export const ConditionGroup = React.memo(({ node, depth, parentId, isRoot = fals
       aria-label={`Condition group, ${node.logic} logic`}
       style={groupStyle}
       className={cn(
-        "sortable-row relative rounded-xl border border-[var(--border)] border-l-4 border-l-[var(--group-depth-color)] bg-[var(--bg-card)] p-4 shadow-sm",
-        depth === 0 && "border-l-transparent",
+        "sortable-row group/condition relative overflow-hidden border shadow-sm transition",
+        isRoot
+          ? "rounded-[var(--radius-xl)] border-[var(--border-default)] border-l-[var(--border-default)] bg-[var(--bg-panel)]"
+          : "my-1.5 rounded-r-[var(--radius-md)] border-[var(--border-subtle)] border-l-[3px] border-l-[var(--group-depth-color)] bg-[var(--group-depth-bg)]",
         isDragging && "z-10 opacity-90 shadow-md"
       )}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex min-h-10 flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 py-2">
         <div className="flex items-center gap-2">
           {!isRoot && (
             <button
               type="button"
-              className="hidden h-9 w-8 cursor-grab items-center justify-center rounded text-[var(--text-muted)] transition hover:bg-[var(--bg-input)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] md:inline-flex"
+              className="hidden h-6 w-6 cursor-grab items-center justify-center rounded-[var(--radius-xs)] text-[var(--text-muted)] transition hover:border hover:border-[var(--border-strong)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] md:inline-flex"
               aria-label={`Drag to reorder group at depth ${depth}`}
               {...sortableAttributes}
               {...listeners}
@@ -81,18 +84,18 @@ export const ConditionGroup = React.memo(({ node, depth, parentId, isRoot = fals
             </button>
           )}
           <Tooltip content={node.collapsed ? "Expand group" : "Collapse group"}>
-            <Button type="button" variant="ghost" size="icon" aria-label={node.collapsed ? "Expand condition group" : "Collapse condition group"} onClick={() => toggleGroupCollapse(node.id)}>
+            <Button type="button" variant="ghost" size="icon" className="h-6 w-6 border border-[var(--border-default)] bg-[var(--bg-card)] text-[var(--text-muted)] hover:border-[var(--border-strong)]" aria-label={node.collapsed ? "Expand condition group" : "Collapse condition group"} onClick={() => toggleGroupCollapse(node.id)}>
               {node.collapsed ? <ChevronRight aria-hidden="true" size={16} /> : <ChevronDown aria-hidden="true" size={16} />}
             </Button>
           </Tooltip>
-          <Badge tone={node.logic === "AND" ? "accent" : "default"}>{isRoot ? "Root" : `Depth ${depth}`}</Badge>
-          {impact && <Badge tone="default">{impact.label}</Badge>}
+          <Badge tone={node.logic === "AND" ? "accent" : "warning"}>{isRoot ? "Root" : `Depth ${depth}`}</Badge>
+          {impact && <Badge tone="default" className="impact-count">{impact.label}</Badge>}
           <LogicToggle value={node.logic} onChange={(logic) => updateGroupLogic(node.id, logic)} />
-          <span className="text-sm text-[var(--text-secondary)]">{node.children.length} conditions</span>
+          <span className="text-[var(--text-xs)] text-[var(--text-muted)]"><span className="font-mono text-[var(--text-primary)]">{node.children.length}</span> conditions</span>
         </div>
         {!isRoot && (
           <Tooltip content="Delete nested group">
-            <Button type="button" variant="ghost" size="icon" aria-label="Delete condition group" onClick={() => removeNode(node.id)}>
+            <Button type="button" variant="ghost" size="icon" className="h-6 w-6 border border-[var(--danger-border)] bg-[var(--danger-muted)] text-[var(--danger)] opacity-0 transition-opacity group-hover/condition:opacity-100" aria-label="Delete condition group" onClick={() => removeNode(node.id)}>
               <Trash2 aria-hidden="true" size={16} />
             </Button>
           </Tooltip>
@@ -106,7 +109,7 @@ export const ConditionGroup = React.memo(({ node, depth, parentId, isRoot = fals
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="mt-3 space-y-2 overflow-hidden"
+            className="space-y-1.5 overflow-hidden px-3 py-2.5"
           >
             <SortableContext items={node.children.map((child) => child.id)} strategy={verticalListSortingStrategy}>
               {node.children.map((child) => child.type === "rule" ? (
@@ -127,7 +130,7 @@ export const ConditionGroup = React.memo(({ node, depth, parentId, isRoot = fals
 
             {groupConflicts.map((conflict) => <ConflictWarning key={`${conflict.groupId}-${conflict.explanation}`} conflict={conflict} />)}
 
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               <AddRuleButton onClick={() => addRule(node.id)} />
               <AddGroupButton onClick={() => addGroup(node.id)} />
             </div>
