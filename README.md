@@ -19,6 +19,11 @@ Data flow:
 
 Depth controls the visual border cascade from blue to violet, amber, pink, and red. `React.memo` isolates nested groups so local edits avoid unnecessary sibling work.
 
+## Visual Design System
+QueryMatrix uses color as query language: teal for primary actions, blue for `AND`, amber for `OR`, green/red for matched and unmatched run outcomes, and field-type colors for faster scanning.
+
+The visual design polishes the header, builder, empty state, preview, results table, graph, command palette, timeline, mobile tabs, and shared UI primitives while preserving the original state flow and feature behavior.
+
 ## State Management Decisions
 Zustand keeps global state small and explicit. `queryStore` is wrapped in zundo temporal middleware with a 50-snapshot limit for undo/redo.
 
@@ -44,7 +49,7 @@ When `OPENAI_API_KEY` is configured, the route calls an OpenAI-compatible chat e
 Failures show a retryable toast. Successful generations import the returned `QueryTree` and show “Query generated! Review and run.”
 
 ## Trade-offs Made
-The project is fully buildable locally, deployed to Vercel, and backed by the required seven-PR workflow. The AI integration remains optional: without `OPENAI_API_KEY`, the deterministic fallback parser keeps the submission reviewable.
+The project is fully buildable locally, deployed to Vercel, and backed by the required seven-PR workflow plus final documentation and visual polish PRs. The AI integration remains optional: without `OPENAI_API_KEY`, the deterministic fallback parser keeps the submission reviewable.
 
 The local shadcn-compatible primitives use Radix directly rather than relying on generated shadcn files, keeping the codebase explicit while satisfying the specified component families.
 
@@ -62,6 +67,34 @@ OPENAI_API_KEY=your_key
 OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_MODEL=gpt-4o-mini
 ```
+
+## Keyboard Shortcuts
+Test all expected shortcuts:
+
+- `Cmd/Ctrl + K` opens the command palette.
+- `Cmd/Ctrl + Z` undoes the last query change.
+- `Cmd/Ctrl + Shift + Z` redoes the last undone change.
+- `Cmd/Ctrl + Enter` runs the current query.
+- `Cmd/Ctrl + E` exports the query JSON.
+- `Cmd/Ctrl + I` imports query JSON.
+- `Cmd/Ctrl + Shift + C` copies SQL.
+- `Cmd/Ctrl + /` toggles the theme.
+- `Cmd/Ctrl + 1` switches to Form view.
+- `Cmd/Ctrl + 2` switches to Graph view.
+- `A` adds a rule when the builder is focused.
+- `G` adds a group when the builder is focused.
+- `Escape` closes palettes, modals, and transient overlays.
+
+## Demo Flow
+Use the Demo button first during review or presentation. It loads a staged nested query, runs it, produces preview output, fills simulator results, updates graph glow state, and creates timeline history in one controlled flow.
+
+Recommended walkthrough:
+
+- Load Demo, then show recursive groups and mixed `AND`/`OR` logic.
+- Switch schemas and confirm the builder animates into the new fields.
+- Review SQL, MongoDB, Prisma, REST, and plain-English Explain output.
+- Run Query and point out matched rows, graph success/danger glow, impact badges, and timeline history.
+- Demonstrate import/export, shareable query URL, command palette, shortcuts, and mobile `Build | Preview | Results | History` tabs.
 
 ## How to Run Tests
 ```bash
@@ -87,3 +120,7 @@ PR 5: [`feat/ai-natural-language-and-validation`](https://github.com/Collinstheg
 PR 6: [`feat/advanced-interactions`](https://github.com/Collinsthegreat/Query_Matrix/pull/6) — command palette, keyboard shortcuts, timeline, schema switcher, ReactFlow graph, presets/history.
 
 PR 7: [`feat/polish-and-accessibility`](https://github.com/Collinsthegreat/Query_Matrix/pull/7) — theme persistence, responsive layout, mobile tabs, reduced motion, focus management, integration tests, README, Vercel config.
+
+PR 8: [`docs/final-submission-links`](https://github.com/Collinsthegreat/Query_Matrix/pull/8) — final submission links, live deployment reference, PR history documentation, and review-ready README updates.
+
+PR 9: [`style/querymatrix-visual-redesign`](https://github.com/Collinsthegreat/Query_Matrix/pull/9) — QueryMatrix visual redesign, semantic color system, Tabler webfont, header/builder/table/graph/palette/timeline polish, and dropdown visibility fix.
