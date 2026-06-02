@@ -24,14 +24,22 @@ type HeaderProps = {
 
 export function Header({ complexity, onOpenPalette, onRun, onExportJson, onImportJson, onCopySql, onSavePreset, onLoadDemo, onCopyShareUrl }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-[var(--z-sticky)] border-b border-[var(--border)] bg-[var(--bg-glass)] backdrop-blur">
-      <div className="flex min-h-16 flex-wrap items-center gap-3 px-4 py-3">
+    <header className="sticky top-0 z-[var(--z-sticky)] border-b border-[var(--border-default)] bg-[var(--bg-panel)]">
+      <div className="flex min-h-[52px] flex-wrap items-center gap-3 px-5 py-2">
         <div className="flex min-w-64 flex-[1_1_300px] items-center gap-3">
           <a href="#query-builder" className="skip-link">Skip to builder</a>
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-[var(--border-accent)] bg-[var(--accent-muted)] font-mono font-bold text-[var(--text-accent)]">QF</div>
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-[var(--radius-md)] border border-[var(--primary-border)] bg-[var(--primary-muted)] font-mono text-[var(--text-sm)] font-bold text-[var(--primary)] shadow-[var(--shadow-glow)]">QM</div>
           <div className="min-w-0">
-            <h1 className="truncate text-lg font-bold text-[var(--text-primary)]">QueryForge</h1>
+            <h1 className="truncate font-[var(--font-ui)] text-[15px] font-semibold leading-tight tracking-[-0.025em]">
+              <span className="text-[var(--primary)]">Query</span>
+              <span className="text-[var(--text-primary)]">Matrix</span>
+            </h1>
             <p className="hidden max-w-[34ch] truncate text-xs text-[var(--text-secondary)] sm:block">Visual Query Engineering Platform</p>
+          </div>
+          <div className="hidden h-5 w-px bg-[var(--border-default)] md:block" aria-hidden="true" />
+          <div className="hidden items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--success-border)] bg-[var(--success-muted)] px-2.5 py-1 text-[var(--text-xs)] text-[var(--text-muted)] md:flex">
+            <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--success)]" aria-hidden="true" />
+            Live
           </div>
         </div>
         <div className="hidden min-w-0 flex-[1_1_430px] flex-wrap items-center justify-start gap-2 lg:flex xl:justify-center">
@@ -57,14 +65,14 @@ export function Header({ complexity, onOpenPalette, onRun, onExportJson, onImpor
           </Tooltip>
           <ThemeToggle />
           <Tooltip content="Open command palette (⌘K)">
-            <Button type="button" variant="secondary" size="sm" onClick={onOpenPalette}>
+            <Button type="button" variant="secondary" size="sm" className="font-mono text-[var(--text-muted)]" onClick={onOpenPalette}>
               <Command aria-hidden="true" size={15} />
-              <span className="font-mono">⌘K</span>
+              <span>⌘ · K</span>
             </Button>
           </Tooltip>
         </div>
       </div>
-      <div className="flex items-center gap-2 overflow-x-auto border-t border-[var(--border)] px-4 py-2 lg:hidden">
+      <div className="flex items-center gap-2 overflow-x-auto border-t border-[var(--border-default)] px-4 py-2 lg:hidden">
         <SchemaSwitcher />
         <ComplexityBadge complexity={complexity} />
       </div>

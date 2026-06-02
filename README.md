@@ -1,4 +1,4 @@
-# QueryForge — Visual Query Engineering Platform
+# QueryMatrix — Visual Query Engineering Platform
 
 ## Live Demo
 [View QueryMatrix Live](https://query-matrix.vercel.app/)
@@ -6,7 +6,7 @@
 The included `vercel.json` configures `npm run build`, `.next`, Next.js framework detection, production on main, and preview deployments for pull requests.
 
 ## Architecture Explanation
-QueryForge uses one recursive `QueryNode` model as the source of truth. A `GroupNode` owns child `QueryNode[]`, so the same tree powers form rendering, graph rendering, generators, validation, simulator execution, history, presets, export, and import.
+QueryMatrix uses one recursive `QueryNode` model as the source of truth. A `GroupNode` owns child `QueryNode[]`, so the same tree powers form rendering, graph rendering, generators, validation, simulator execution, history, presets, export, and import.
 
 Component tree:
 `app/page.tsx → Header + ResizablePanel → QueryBuilder + HistoryTimeline → QueryPreview + QuerySimulator + Sidebar`.
@@ -17,7 +17,7 @@ Data flow:
 ## Recursive Rendering Strategy
 `ConditionGroup` renders a group header, DnD sortable child list, conflict warnings, and add controls. When a child is another group, `ConditionGroup` calls itself with `depth + 1`.
 
-Depth controls the visual border cascade from indigo to pink. `React.memo` isolates nested groups so local edits avoid unnecessary sibling work.
+Depth controls the visual border cascade from blue to violet, amber, pink, and red. `React.memo` isolates nested groups so local edits avoid unnecessary sibling work.
 
 ## State Management Decisions
 Zustand keeps global state small and explicit. `queryStore` is wrapped in zundo temporal middleware with a 50-snapshot limit for undo/redo.

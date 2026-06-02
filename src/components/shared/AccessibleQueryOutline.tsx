@@ -25,11 +25,11 @@ function nodeLabel(node: QueryNode, schema: Schema): string {
 function OutlineNode({ node, schema }: { node: QueryNode; schema: Schema }) {
   return (
     <li>
-      <div className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)]">
+      <div className="rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)]">
         {nodeLabel(node, schema)}
       </div>
       {node.type === "group" && node.children.length > 0 && (
-        <ol className="ml-4 mt-2 grid gap-2 border-l border-[var(--border)] pl-3">
+        <ol className="ml-4 mt-2 grid gap-2 border-l border-[var(--border-default)] pl-3">
           {node.children.map((child) => <OutlineNode key={child.id} node={child} schema={schema} />)}
         </ol>
       )}
@@ -39,8 +39,8 @@ function OutlineNode({ node, schema }: { node: QueryNode; schema: Schema }) {
 
 export function AccessibleQueryOutline({ tree, schema }: { tree: QueryTree; schema: Schema }) {
   return (
-    <details className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3">
-      <summary className="cursor-pointer text-sm font-semibold text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
+    <details className="rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--bg-card)] p-3">
+      <summary className="cursor-pointer text-sm font-semibold text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]">
         Screen reader outline
       </summary>
       <p className="mt-2 text-xs text-[var(--text-secondary)]">

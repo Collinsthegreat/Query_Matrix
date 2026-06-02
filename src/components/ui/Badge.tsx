@@ -9,12 +9,12 @@ export function Badge({ className, tone = "default", ...props }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex min-h-6 items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
-        tone === "default" && "border-[var(--border)] bg-[var(--bg-input)] text-[var(--text-secondary)]",
-        tone === "success" && "border-[rgba(34,197,94,0.35)] bg-[rgba(34,197,94,0.12)] text-[var(--success)]",
-        tone === "warning" && "border-[rgba(245,158,11,0.35)] bg-[rgba(245,158,11,0.12)] text-[var(--warning)]",
-        tone === "danger" && "border-[rgba(239,68,68,0.35)] bg-[rgba(239,68,68,0.12)] text-[var(--danger)]",
-        tone === "accent" && "border-[var(--border-accent)] bg-[var(--accent-muted)] text-[var(--text-accent)]",
+        "inline-flex min-h-6 items-center gap-1 rounded-[var(--radius-sm)] border px-2 py-0.5 font-mono text-[var(--text-xs)] font-semibold leading-none",
+        tone === "default" && "border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-secondary)]",
+        tone === "success" && "border-[var(--success-border)] bg-[var(--success-muted)] text-[var(--success)]",
+        tone === "warning" && "border-[var(--warning-border)] bg-[var(--warning-muted)] text-[var(--warning)]",
+        tone === "danger" && "border-[var(--danger-border)] bg-[var(--danger-muted)] text-[var(--danger)]",
+        tone === "accent" && "border-[var(--primary-border)] bg-[var(--primary-muted)] text-[var(--primary)]",
         className
       )}
       {...props}

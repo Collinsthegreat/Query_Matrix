@@ -36,7 +36,7 @@ export function FieldSelector({ rule, schema, onChange }: { rule: RuleNode; sche
           <SelectValue placeholder="Field">
             {selected ? (
               <span className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full" style={{ "--field-dot": FIELD_TYPE_COLOR_VAR[selected.type] } as React.CSSProperties & Record<"--field-dot", string>} />
+                <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-[var(--field-dot)]" style={{ "--field-dot": FIELD_TYPE_COLOR_VAR[selected.type] } as React.CSSProperties & Record<"--field-dot", string>} />
                 <span>{selected.label}</span>
               </span>
             ) : "Field"}
@@ -59,7 +59,7 @@ export function FieldSelector({ rule, schema, onChange }: { rule: RuleNode; sche
                 })()}
               >
                 <span className="flex w-full items-center gap-2">
-                  <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--field-dot)]" style={{ "--field-dot": FIELD_TYPE_COLOR_VAR[field.type] } as React.CSSProperties & Record<"--field-dot", string>} />
+                  <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-[var(--field-dot)]" style={{ "--field-dot": FIELD_TYPE_COLOR_VAR[field.type] } as React.CSSProperties & Record<"--field-dot", string>} />
                   <span>{field.label}</span>
                   <span className="ml-auto text-xs text-[var(--text-muted)]">{field.type}</span>
                 </span>

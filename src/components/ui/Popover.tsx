@@ -12,7 +12,7 @@ export function PopoverContent({ children, className }: { children: React.ReactN
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         sideOffset={8}
-        className={cn("z-[var(--z-dropdown)] w-80 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3 text-sm text-[var(--text-primary)] shadow-md", className)}
+        className={cn("z-[var(--z-dropdown)] w-80 rounded-[var(--radius-lg)] border border-[var(--border-strong)] bg-[var(--bg-card)] p-3 text-sm text-[var(--text-primary)] shadow-md", className)}
       >
         {children}
       </PopoverPrimitive.Content>

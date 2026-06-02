@@ -10,6 +10,7 @@ import { useQueryStore } from "@/stores/queryStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { usePresetsStore } from "@/stores/presetsStore";
 import { queryTemporalStore } from "@/stores/queryTemporal";
+import { cn } from "@/lib/utils";
 
 type CommandItem = {
   id: string;
@@ -57,9 +58,9 @@ export function CommandPalette({ open, onOpenChange, onRun, onExportJson, onImpo
     { id: "run-query", label: "Run Query", icon: Play, shortcut: "⌘↵", description: "Validate and execute against the mock dataset.", preview: "Updates results, graph glow, run history, and status bar.", group: "Query", action: onRun },
     { id: "load-demo", label: "Load Benchmark Demo", icon: Sparkles, description: "Stage a complete presentation-ready query.", preview: "Imports a nested tree, switches to graph view, saves a preset, and runs automatically.", group: "Query", action: onLoadDemo },
     { id: "copy-share-url", label: "Copy Share URL", icon: Link2, description: "Create a compressed URL for the current query.", preview: "Copies a backend-free link that restores this query.", group: "Query", action: onCopyShareUrl },
-    { id: "export-json", label: "Export Query as JSON", icon: Download, shortcut: "⌘E", description: "Download the validated query tree.", preview: "Creates a QueryForge JSON export.", group: "Query", action: onExportJson },
+    { id: "export-json", label: "Export Query as JSON", icon: Download, shortcut: "⌘E", description: "Download the validated query tree.", preview: "Creates a QueryMatrix JSON export.", group: "Query", action: onExportJson },
     { id: "export-sql", label: "Copy SQL to Clipboard", icon: Copy, shortcut: "⌘⇧C", description: "Copy the SQL projection.", preview: "Places the current SQL preview on the clipboard.", group: "Query", action: onCopySql },
-    { id: "import-json", label: "Import Query JSON", icon: Upload, shortcut: "⌘I", description: "Open a QueryForge JSON export.", preview: "Validates recursive structure before importing.", group: "Query", action: onImportJson },
+    { id: "import-json", label: "Import Query JSON", icon: Upload, shortcut: "⌘I", description: "Open a QueryMatrix JSON export.", preview: "Validates recursive structure before importing.", group: "Query", action: onImportJson },
     { id: "schema-users", label: "Switch Schema: Users", icon: User, description: "Load the users schema.", preview: "Resets the builder to user account fields.", group: "Schemas", action: () => setSchema("users") },
     { id: "schema-orders", label: "Switch Schema: Orders", icon: Package, description: "Load the orders schema.", preview: "Resets the builder to transaction fields.", group: "Schemas", action: () => setSchema("orders") },
     { id: "schema-products", label: "Switch Schema: Products", icon: Store, description: "Load the products schema.", preview: "Resets the builder to catalog fields.", group: "Schemas", action: () => setSchema("products") },
@@ -80,15 +81,20 @@ export function CommandPalette({ open, onOpenChange, onRun, onExportJson, onImpo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent title="Command Palette" className="w-[min(90vw,680px)] p-0">
-        <Command className="overflow-hidden rounded-lg bg-[var(--bg-card)]" loop>
-          <Command.Input className="h-12 w-full border-b border-[var(--border)] bg-[var(--bg-input)] px-4 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]" placeholder="Search commands..." />
+        <Command className="overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-panel)]" loop>
+          <div className="flex items-center gap-2 border-b border-[var(--border-default)] px-4">
+            <i className="ti ti-search text-[var(--text-muted)]" aria-hidden="true" />
+            <Command.Input className="h-12 flex-1 bg-transparent text-[var(--text-md)] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]" placeholder="Search commands..." />
+            <span className="rounded-[var(--radius-xs)] border border-[var(--border-default)] bg-[var(--bg-elevated)] px-1.5 py-0.5 font-mono text-[var(--text-xs)] text-[var(--text-muted)]">ESC</span>
+          </div>
           <div className="grid md:grid-cols-[minmax(0,1fr)_270px]">
             <Command.List className="max-h-96 overflow-auto p-2">
               <Command.Empty className="p-6 text-center text-sm text-[var(--text-secondary)]">No matching command.</Command.Empty>
               {groups.map((group) => (
-                <Command.Group key={group} heading={<span className="px-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">{group}</span>}>
+                <Command.Group key={group} heading={<span className="px-2 pt-2 text-[var(--text-xs)] font-medium uppercase tracking-[0.07em] text-[var(--text-muted)]">{group}</span>}>
                   {ordered.filter((command) => command.group === group).map((command) => {
                     const Icon = command.icon;
+                    const danger = command.id === "clear-all";
                     return (
                       <Command.Item
                         key={command.id}
@@ -96,9 +102,12 @@ export function CommandPalette({ open, onOpenChange, onRun, onExportJson, onImpo
                         onMouseEnter={() => setActiveId(command.id)}
                         onFocus={() => setActiveId(command.id)}
                         onSelect={() => execute(command)}
-                        className="flex min-h-11 cursor-pointer items-center gap-3 rounded px-3 text-sm text-[var(--text-primary)] outline-none aria-selected:bg-[var(--bg-card-hover)]"
+                        className={cn(
+                          "flex min-h-10 cursor-pointer items-center gap-3 rounded-[var(--radius-md)] px-3 text-[var(--text-sm)] text-[var(--text-secondary)] outline-none transition aria-selected:bg-[var(--primary-muted)] aria-selected:text-[var(--text-primary)]",
+                          danger && "aria-selected:bg-[var(--danger-muted)] aria-selected:text-[var(--danger)]"
+                        )}
                       >
-                        <Icon aria-hidden="true" size={16} />
+                        <Icon aria-hidden="true" className="text-[var(--text-muted)]" size={16} />
                         <span className="flex-1">{command.label}</span>
                         {recent.includes(command.id) && <Badge tone="accent">Recent</Badge>}
                         {command.shortcut && <Badge>{command.shortcut}</Badge>}
@@ -109,11 +118,11 @@ export function CommandPalette({ open, onOpenChange, onRun, onExportJson, onImpo
               ))}
             </Command.List>
             {activeCommand && (
-              <aside className="hidden border-l border-[var(--border)] bg-[var(--bg-input)] p-4 md:block" aria-label="Command preview">
-                <div className="text-xs font-semibold uppercase text-[var(--text-muted)]">Preview</div>
+              <aside className="hidden border-l border-[var(--border-default)] bg-[var(--bg-input)] p-4 md:block" aria-label="Command preview">
+                <div className="text-[var(--text-xs)] font-semibold uppercase tracking-[0.07em] text-[var(--text-muted)]">Preview</div>
                 <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{activeCommand.label}</div>
                 <p className="mt-2 text-sm text-[var(--text-secondary)]">{activeCommand.description}</p>
-                <div className="mt-4 rounded border border-[var(--border)] bg-[var(--bg-card)] p-3 text-xs text-[var(--text-secondary)]">{activeCommand.preview}</div>
+                <div className="mt-4 rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-card)] p-3 text-xs text-[var(--text-secondary)]">{activeCommand.preview}</div>
                 {activeCommand.shortcut && <div className="mt-3"><Badge>{activeCommand.shortcut}</Badge></div>}
               </aside>
             )}

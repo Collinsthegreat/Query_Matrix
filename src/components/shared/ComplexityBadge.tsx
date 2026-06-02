@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/Badge";
 import { Tooltip } from "@/components/ui/Tooltip";
 import type { ComplexityResult } from "@/lib/complexity";
 
 export function ComplexityBadge({ complexity }: { complexity: ComplexityResult }) {
+  const fillColor = complexity.label === "Simple" ? "var(--success)" : complexity.label === "Moderate" ? "var(--warning)" : complexity.label === "Complex" ? "var(--complex)" : "var(--danger)";
   return (
     <Tooltip
       content={
@@ -17,18 +17,13 @@ export function ComplexityBadge({ complexity }: { complexity: ComplexityResult }
         </div>
       }
     >
-      <Badge tone={complexity.label === "Simple" ? "success" : complexity.label === "Expert" ? "danger" : "warning"} className="gap-2">
-        <span aria-hidden="true" className="grid grid-cols-4 gap-0.5">
-          {Array.from({ length: 4 }, (_, index) => (
-            <span
-              key={index}
-              className="h-3 w-1 rounded-full bg-current opacity-30 data-[active=true]:opacity-100"
-              data-active={index < Math.ceil(complexity.score / 25)}
-            />
-          ))}
+      <div className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-default)] bg-[var(--bg-card)] px-2.5 py-1">
+        <span className="text-[var(--text-xs)] font-medium uppercase tracking-[0.07em] text-[var(--text-muted)]">Complexity</span>
+        <span aria-hidden="true" className="h-1.5 w-[72px] overflow-hidden rounded-full bg-[var(--border-default)]">
+          <span className="block h-full rounded-full transition-all duration-300" style={{ width: `${Math.min(100, complexity.score)}%`, background: fillColor }} />
         </span>
-        {complexity.label} {complexity.score}
-      </Badge>
+        <span className="font-mono text-[var(--text-xs)] font-semibold" style={{ color: fillColor }}>{complexity.label} {complexity.score}</span>
+      </div>
     </Tooltip>
   );
 }
